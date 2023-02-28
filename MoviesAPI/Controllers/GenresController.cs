@@ -14,9 +14,9 @@ public class GenresController : Controller
     }
     // GET
     [HttpGet]
-    public ActionResult<List<Genre>> GetAllGenres()
+    public async Task<ActionResult<List<Genre>>> GetAllGenres()
     {
-        return _repository.GetAllGenres();
+        return await _repository.GetAllGenres();
     }
 
     [HttpGet("{id:int}")]
@@ -32,9 +32,10 @@ public class GenresController : Controller
     }
 
     [HttpPost]
-    public void Post()
+    public ActionResult Post([FromBody] Genre genre)
     {
-        
+        _repository.AddGenre(genre);
+        return NoContent();
     }
 
     [HttpPut]

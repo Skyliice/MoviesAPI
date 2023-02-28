@@ -15,6 +15,15 @@ public class InMemoryRepository : IRepository
         };
     }
 
-    public List<Genre> GetAllGenres() => _genres;
+    public async Task<List<Genre>> GetAllGenres()
+    {
+        await Task.Delay(1000);
+        return _genres;
+    } 
     public Genre GetGenreById(int id) => _genres.FirstOrDefault(x => x.Id == id);
+    public void AddGenre(Genre genre)
+    {
+        genre.Id = _genres.Max(x => x.Id) + 1;
+        _genres.Add(genre);
+    }
 }
