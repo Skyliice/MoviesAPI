@@ -2,7 +2,8 @@
 using MoviesAPI.Entities;
 
 namespace MoviesAPI.Controllers;
-[Route("api/genres")]
+[Route("api/[controller]")]
+[ApiController]
 public class GenresController : Controller
 {
     private readonly IRepository _repository;
@@ -13,8 +14,38 @@ public class GenresController : Controller
     }
     // GET
     [HttpGet]
-    public List<Genre> Index()
+    public ActionResult<List<Genre>> GetAllGenres()
     {
         return _repository.GetAllGenres();
+    }
+
+    [HttpGet("{id:int}")]
+    public ActionResult<Genre> Get(int id)
+    {
+        var genre = _repository.GetGenreById(id);
+        if (genre == null)
+        {
+            return NotFound();
+        }
+
+        return genre;
+    }
+
+    [HttpPost]
+    public void Post()
+    {
+        
+    }
+
+    [HttpPut]
+    public void Put()
+    {
+        
+    }
+
+    [HttpDelete]
+    public void Delete()
+    {
+        
     }
 }

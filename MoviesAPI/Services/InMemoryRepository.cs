@@ -16,4 +16,5 @@ public class InMemoryRepository : IRepository
     }
 
     public List<Genre> GetAllGenres() => _genres;
+    public Genre GetGenreById(int id) => _genres.FirstOrDefault(x => x.Id == id);
 }
