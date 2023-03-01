@@ -5,6 +5,6 @@ namespace MoviesAPI;
 public interface IRepository
 {
     public Task<List<Genre>> GetAllGenres();
-    public Genre GetGenreById(int id);
-    public void AddGenre(Genre genre);
+    public Task<Genre> GetGenreById(int id);
+    public Task AddGenre(Genre genre);
 }

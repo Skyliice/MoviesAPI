@@ -1,40 +1,40 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MoviesAPI.Entities;
+using MoviesAPI.Services;
 
 namespace MoviesAPI.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 public class GenresController : Controller
 {
-    private readonly IRepository _repository;
+    private readonly MoviesDataService _service;
     
-    public GenresController(IRepository repository)
+    public GenresController(MoviesDataService service)
     {
-        _repository = repository;
+        _service = service;
     }
     // GET
     [HttpGet]
     public async Task<ActionResult<List<Genre>>> GetAllGenres()
     {
-        return await _repository.GetAllGenres();
+        return await _service.GetAllGenres();
     }
 
     [HttpGet("{id:int}")]
-    public ActionResult<Genre> Get(int id)
+    public async Task<ActionResult<Genre>> Get(int id)
     {
-        var genre = _repository.GetGenreById(id);
+        var genre = await _service.GetGenreById(id);
         if (genre == null)
         {
             return NotFound();
         }
-
         return genre;
     }
 
     [HttpPost]
-    public ActionResult Post([FromBody] Genre genre)
+    public async Task<ActionResult> Post([FromBody] Genre genre)
     {
-        _repository.AddGenre(genre);
+        await _service.AddGenre(genre);
         return NoContent();
     }
 
