@@ -18,6 +18,7 @@ builder.Services.AddScoped<IRepository, MoviesSQLServerRepository>();
 builder.Services.AddScoped<MoviesDataService>();
 builder.Services.AddDbContext<MoviesDbContext>(options => 
     options.UseSqlServer(builder.Configuration.GetValue<string>("DefaultConnection")));
+builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>
 {
