@@ -13,19 +13,21 @@ builder.Services.AddControllers(options =>
     options.Filters.Add(typeof(ParseBadRequest));
 }).ConfigureApiBehaviorOptions(BadRequestBehaviour.Parse);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<IRepository, MoviesSQLServerRepository>();
 builder.Services.AddScoped<MoviesDataService>();
 builder.Services.AddDbContext<MoviesDbContext>(options => 
     options.UseSqlServer(builder.Configuration.GetValue<string>("DefaultConnection")));
-builder.Services.AddAutoMapper(typeof(Program));
+
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>
 {
     var frontendURL = builder.Configuration.GetValue<string>("frontend_url");
     options.AddDefaultPolicy(builder =>
     {
-        builder.WithOrigins(frontendURL).AllowAnyMethod().AllowAnyHeader();
+        builder.WithOrigins(frontendURL).AllowAnyMethod().AllowAnyHeader()
+            .WithExposedHeaders(new string[] { "totalAmountOfRecords" });
     });
 });
 

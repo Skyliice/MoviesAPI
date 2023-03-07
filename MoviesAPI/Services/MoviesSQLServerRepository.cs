@@ -1,5 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using MoviesAPI.Entities;
+using MoviesAPI.Helpers;
+
 
 namespace MoviesAPI.Services;
 
@@ -21,5 +24,22 @@ public class MoviesSQLServerRepository : IRepository
     {
         await _context.Genres.AddAsync(genre);
         await _context.SaveChangesAsync();
+    }
+
+    public async Task UpdateGenre(Genre genre)
+    {
+        _context.Genres.Update(genre);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteGenre(Genre genre)
+    {
+        _context.Genres.Remove(genre);
+        await _context.SaveChangesAsync();
+    }
+
+    public IQueryable<Genre> GetGenresAsQueryable()
+    {
+        return  _context.Genres.AsQueryable();
     }
 }

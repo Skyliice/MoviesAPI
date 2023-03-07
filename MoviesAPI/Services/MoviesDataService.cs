@@ -29,4 +29,28 @@ public class MoviesDataService
     {
         await _context.AddGenre(_mapper.Map<Genre>(genre));
     }
+
+    public IQueryable<Genre> GetGenresAsQueryable()
+    {
+        return _context.GetGenresAsQueryable();
+    }
+
+    public async Task UpdateGenre(int id,GenreCreationDTO genreCreationDTO)
+    {
+        var genre = await _context.GetGenreById(id);
+        genre = _mapper.Map(genreCreationDTO, genre);
+        await _context.UpdateGenre(genre);
+    }
+
+    public async Task RemoveGenre(int id)
+    {
+        var genre = await _context.GetGenreById(id);
+        await _context.DeleteGenre(genre);
+    }
+
+    public List<GenreDTO> MaptoGenreDTO(List<Genre> genres)
+    {
+        return _mapper.Map<List<GenreDTO>>(genres);
+    }
+    
 }
