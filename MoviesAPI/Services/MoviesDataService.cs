@@ -15,11 +15,6 @@ public class MoviesDataService
         _mapper = mapper;
     }
 
-    public async Task<List<GenreDTO>> GetAllGenres()
-    {
-        return _mapper.Map<List<GenreDTO>>(await _context.GetAllGenres());
-    }
-
     public async Task<GenreDTO> GetGenreById(int id)
     {
         return _mapper.Map<GenreDTO>( await _context.GetGenreById(id));
@@ -48,9 +43,37 @@ public class MoviesDataService
         await _context.DeleteGenre(genre);
     }
 
-    public List<GenreDTO> MaptoGenreDTO(List<Genre> genres)
+    public List<U> MapTo<T,U>(List<T> from)
     {
-        return _mapper.Map<List<GenreDTO>>(genres);
+        return _mapper.Map<List<U>>(from);
+    }
+    
+    public async Task<ActorDTO> GetActorById(int id)
+    {
+        return _mapper.Map<ActorDTO>( await _context.GetActorById(id));
+    }
+
+    public async Task AddActor(ActorCreationDTO actor)
+    {
+        await _context.AddActor(_mapper.Map<Actor>(actor));
+    }
+
+    public IQueryable<Actor> GetActorsAsQueryable()
+    {
+        return _context.GetActorsAsQueryable();
+    }
+
+    public async Task UpdateActor(int id,ActorCreationDTO actorCreationDTO)
+    {
+        var actor = await _context.GetActorById(id);
+        actor = _mapper.Map(actorCreationDTO, actor);
+        await _context.UpdateActor(actor);
+    }
+
+    public async Task RemoveActor(int id)
+    {
+        var actor = await _context.GetActorById(id);
+        await _context.DeleteActor(actor);
     }
     
 }
