@@ -8,11 +8,13 @@ public class MoviesDataService
 {
     private IRepository _context;
     private IMapper _mapper;
+    private IFileStorageService _fileStorageService;
 
-    public MoviesDataService(IRepository context,IMapper mapper)
+    public MoviesDataService(IRepository context,IMapper mapper, IFileStorageService fileStorageService)
     {
         _context = context;
         _mapper = mapper;
+        _fileStorageService = fileStorageService;
     }
 
     public async Task<GenreDTO> GetGenreById(int id)
@@ -53,9 +55,14 @@ public class MoviesDataService
         return _mapper.Map<ActorDTO>( await _context.GetActorById(id));
     }
 
-    public async Task AddActor(ActorCreationDTO actor)
+    public async Task AddActor(ActorCreationDTO actorCreationDto)
     {
-        await _context.AddActor(_mapper.Map<Actor>(actor));
+        var actor = _mapper.Map<Actor>(actorCreationDto);
+        if (actorCreationDto.Picture != null)
+        {
+            actor.Picture = await _fileStorageService.SaveFile("actors", actorCreationDto.Picture);
+        }
+        await _context.AddActor(actor);
     }
 
     public IQueryable<Actor> GetActorsAsQueryable()

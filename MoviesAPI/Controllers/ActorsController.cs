@@ -12,6 +12,7 @@ namespace MoviesAPI.Controllers;
 public class ActorsController : Controller
 {
     private MoviesDataService _service;
+    private IFileStorageService _fileStorageService;
 
     public ActorsController(MoviesDataService service)
     {
