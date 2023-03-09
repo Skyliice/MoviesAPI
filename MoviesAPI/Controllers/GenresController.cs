@@ -23,7 +23,7 @@ public class GenresController : Controller
         var queryable = _service.GetGenresAsQueryable();
         await HttpContext.InsertParametersPaginationInHeader(queryable);
         var genres = await queryable.OrderBy(x => x.Name).Paginate(paginationDTO).ToListAsync();
-        return _service.MaptoGenreDTO(genres);
+        return _service.MapTo<Genre,GenreDTO>(genres);
     }
 
     [HttpGet("{id:int}")]
