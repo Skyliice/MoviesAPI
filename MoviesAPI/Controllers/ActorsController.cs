@@ -48,7 +48,7 @@ public class ActorsController : Controller
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult> Put(int id,[FromBody] ActorCreationDTO actor)
+    public async Task<ActionResult> Put(int id,[FromForm] ActorCreationDTO actor)
     {
         await _service.UpdateActor(id,actor);
         return NoContent();

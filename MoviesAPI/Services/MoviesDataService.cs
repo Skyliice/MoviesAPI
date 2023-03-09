@@ -73,6 +73,15 @@ public class MoviesDataService
     public async Task UpdateActor(int id,ActorCreationDTO actorCreationDTO)
     {
         var actor = await _context.GetActorById(id);
+        if (actor == null)
+        {
+            return;
+        }
+
+        if (actorCreationDTO.Picture != null)
+        {
+            actor.Picture = await _fileStorageService.EditFile("actors",actorCreationDTO.Picture,actor.Picture);
+        }
         actor = _mapper.Map(actorCreationDTO, actor);
         await _context.UpdateActor(actor);
     }
@@ -80,7 +89,12 @@ public class MoviesDataService
     public async Task RemoveActor(int id)
     {
         var actor = await _context.GetActorById(id);
+        if (actor == null)
+        {
+            return;
+        }
         await _context.DeleteActor(actor);
+        await _fileStorageService.DeleteFile(actor.Picture, "actors");
     }
     
 }
