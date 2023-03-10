@@ -97,4 +97,32 @@ public class MoviesDataService
         await _fileStorageService.DeleteFile(actor.Picture, "actors");
     }
     
+    public async Task<MovieTheaterDTO> GetMovieTheaterById(int id)
+    {
+        return _mapper.Map<MovieTheaterDTO>( await _context.GetMovieTheaterById(id));
+    }
+
+    public async Task AddMovieTheater(MovieTheaterCreationDTO movieTheaterCreationDto)
+    {
+        await _context.AddMovieTheater(_mapper.Map<MovieTheater>(movieTheaterCreationDto));
+    }
+
+    public IQueryable<MovieTheater> GetMovieTheatersAsQueryable()
+    {
+        return _context.GetMovieTheatersAsQueryable();
+    }
+
+    public async Task UpdateMovieTheater(int id,MovieTheaterCreationDTO movieTheaterCreationDto)
+    {
+        var movieTheater = await _context.GetMovieTheaterById(id);
+        movieTheater = _mapper.Map(movieTheaterCreationDto, movieTheater);
+        await _context.UpdateMovieTheater(movieTheater);
+    }
+
+    public async Task RemoveMovieTheater(int id)
+    {
+        var movieTheater = await _context.GetMovieTheaterById(id);
+        await _context.DeleteMovieTheater(movieTheater);
+    }
+    
 }

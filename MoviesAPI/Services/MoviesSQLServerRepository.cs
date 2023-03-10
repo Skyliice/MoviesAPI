@@ -66,4 +66,32 @@ public class MoviesSQLServerRepository : IRepository
     {
         return _context.Actors.AsQueryable();
     }
+
+    public async Task<MovieTheater> GetMovieTheaterById(int id)
+    {
+        return await _context.MovieTheaters.FirstOrDefaultAsync(o => o.Id == id);
+    }
+
+    public async Task AddMovieTheater(MovieTheater movieTheater)
+    {
+        await _context.MovieTheaters.AddAsync(movieTheater);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task UpdateMovieTheater(MovieTheater movieTheater)
+    {
+        _context.MovieTheaters.Update(movieTheater);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteMovieTheater(MovieTheater movieTheater)
+    {
+        _context.MovieTheaters.Remove(movieTheater);
+        await _context.SaveChangesAsync();
+    }
+
+    public IQueryable<MovieTheater> GetMovieTheatersAsQueryable()
+    {
+        return _context.MovieTheaters.AsQueryable();
+    }
 }
