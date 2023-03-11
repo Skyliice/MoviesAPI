@@ -14,11 +14,7 @@ public class MoviesSQLServerRepository : IRepository
     {
         _context = context;
     }
-
-    public async Task<List<Genre>> GetAllGenres()
-    {
-        return await _context.Genres.ToListAsync();
-    } 
+    
     public async Task<Genre> GetGenreById(int id) => await _context.Genres.FirstOrDefaultAsync(x => x.Id == id);
     public async Task AddGenre(Genre genre)
     {
@@ -41,5 +37,61 @@ public class MoviesSQLServerRepository : IRepository
     public IQueryable<Genre> GetGenresAsQueryable()
     {
         return  _context.Genres.AsQueryable();
+    }
+
+    public async Task<Actor> GetActorById(int id)
+    {
+        return await _context.Actors.FirstOrDefaultAsync(o => o.Id == id);
+    }
+
+    public async Task AddActor(Actor actor)
+    {
+        await _context.Actors.AddAsync(actor);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task UpdateActor(Actor actor)
+    {
+        _context.Actors.Update(actor);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteActor(Actor actor)
+    {
+        _context.Actors.Remove(actor);
+        await _context.SaveChangesAsync();
+    }
+
+    public IQueryable<Actor> GetActorsAsQueryable()
+    {
+        return _context.Actors.AsQueryable();
+    }
+
+    public async Task<MovieTheater> GetMovieTheaterById(int id)
+    {
+        return await _context.MovieTheaters.FirstOrDefaultAsync(o => o.Id == id);
+    }
+
+    public async Task AddMovieTheater(MovieTheater movieTheater)
+    {
+        await _context.MovieTheaters.AddAsync(movieTheater);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task UpdateMovieTheater(MovieTheater movieTheater)
+    {
+        _context.MovieTheaters.Update(movieTheater);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteMovieTheater(MovieTheater movieTheater)
+    {
+        _context.MovieTheaters.Remove(movieTheater);
+        await _context.SaveChangesAsync();
+    }
+
+    public IQueryable<MovieTheater> GetMovieTheatersAsQueryable()
+    {
+        return _context.MovieTheaters.AsQueryable();
     }
 }

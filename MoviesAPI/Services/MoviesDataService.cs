@@ -8,16 +8,13 @@ public class MoviesDataService
 {
     private IRepository _context;
     private IMapper _mapper;
+    private IFileStorageService _fileStorageService;
 
-    public MoviesDataService(IRepository context,IMapper mapper)
+    public MoviesDataService(IRepository context,IMapper mapper, IFileStorageService fileStorageService)
     {
         _context = context;
         _mapper = mapper;
-    }
-
-    public async Task<List<GenreDTO>> GetAllGenres()
-    {
-        return _mapper.Map<List<GenreDTO>>(await _context.GetAllGenres());
+        _fileStorageService = fileStorageService;
     }
 
     public async Task<GenreDTO> GetGenreById(int id)
@@ -48,9 +45,84 @@ public class MoviesDataService
         await _context.DeleteGenre(genre);
     }
 
-    public List<GenreDTO> MaptoGenreDTO(List<Genre> genres)
+    public List<U> MapTo<T,U>(List<T> from)
     {
-        return _mapper.Map<List<GenreDTO>>(genres);
+        return _mapper.Map<List<U>>(from);
+    }
+    
+    public async Task<ActorDTO> GetActorById(int id)
+    {
+        return _mapper.Map<ActorDTO>( await _context.GetActorById(id));
+    }
+
+    public async Task AddActor(ActorCreationDTO actorCreationDto)
+    {
+        var actor = _mapper.Map<Actor>(actorCreationDto);
+        if (actorCreationDto.Picture != null)
+        {
+            actor.Picture = await _fileStorageService.SaveFile("actors", actorCreationDto.Picture);
+        }
+        await _context.AddActor(actor);
+    }
+
+    public IQueryable<Actor> GetActorsAsQueryable()
+    {
+        return _context.GetActorsAsQueryable();
+    }
+
+    public async Task UpdateActor(int id,ActorCreationDTO actorCreationDTO)
+    {
+        var actor = await _context.GetActorById(id);
+        if (actor == null)
+        {
+            return;
+        }
+
+        if (actorCreationDTO.Picture != null)
+        {
+            actor.Picture = await _fileStorageService.EditFile("actors",actorCreationDTO.Picture,actor.Picture);
+        }
+        actor = _mapper.Map(actorCreationDTO, actor);
+        await _context.UpdateActor(actor);
+    }
+
+    public async Task RemoveActor(int id)
+    {
+        var actor = await _context.GetActorById(id);
+        if (actor == null)
+        {
+            return;
+        }
+        await _context.DeleteActor(actor);
+        await _fileStorageService.DeleteFile(actor.Picture, "actors");
+    }
+    
+    public async Task<MovieTheaterDTO> GetMovieTheaterById(int id)
+    {
+        return _mapper.Map<MovieTheaterDTO>( await _context.GetMovieTheaterById(id));
+    }
+
+    public async Task AddMovieTheater(MovieTheaterCreationDTO movieTheaterCreationDto)
+    {
+        await _context.AddMovieTheater(_mapper.Map<MovieTheater>(movieTheaterCreationDto));
+    }
+
+    public IQueryable<MovieTheater> GetMovieTheatersAsQueryable()
+    {
+        return _context.GetMovieTheatersAsQueryable();
+    }
+
+    public async Task UpdateMovieTheater(int id,MovieTheaterCreationDTO movieTheaterCreationDto)
+    {
+        var movieTheater = await _context.GetMovieTheaterById(id);
+        movieTheater = _mapper.Map(movieTheaterCreationDto, movieTheater);
+        await _context.UpdateMovieTheater(movieTheater);
+    }
+
+    public async Task RemoveMovieTheater(int id)
+    {
+        var movieTheater = await _context.GetMovieTheaterById(id);
+        await _context.DeleteMovieTheater(movieTheater);
     }
     
 }
