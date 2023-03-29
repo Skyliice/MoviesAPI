@@ -7,7 +7,7 @@ using MoviesAPI.Services;
 
 namespace MoviesAPI.Controllers;
 
-[Route("/api/movietheaters")]
+[Route("api/movietheaters")]
 [ApiController]
 public class MovieTheatersController : Controller
 {
@@ -19,6 +19,7 @@ public class MovieTheatersController : Controller
     }
     // GET
     [HttpGet]
+    [ActionName("get")]
     public async Task<ActionResult<List<MovieTheaterDTO>>> GetMovieTheaters([FromQuery] PaginationDTO paginationDTO)
     {
         var queryable = _service.GetMovieTheatersAsQueryable();
@@ -27,7 +28,7 @@ public class MovieTheatersController : Controller
         return _service.MapTo<MovieTheater,MovieTheaterDTO>(movieTheaters);
     }
     
-    [HttpGet("${int:id}")]
+    [HttpGet("{id:int}")]
     public async Task<ActionResult<MovieTheaterDTO>> GetMovieTheaterById(int id)
     {
         var movieTheater = await _service.GetMovieTheaterById(id);
