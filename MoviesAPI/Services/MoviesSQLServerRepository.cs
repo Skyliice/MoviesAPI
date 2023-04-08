@@ -94,4 +94,38 @@ public class MoviesSQLServerRepository : IRepository
     {
         return _context.MovieTheaters.AsQueryable();
     }
+
+    public IQueryable<Movie> GetMoviesAsQueryable()
+    {
+        return _context.Movies.AsQueryable();
+    }
+    
+    public async Task<Movie> GetMovieById(int id)
+    {
+        var movie =  await _context.Movies
+            .Include(o => o.MovieActors).ThenInclude(o => o.Actor)
+            .Include(o=>o.MoviesGenres)
+            .Include(o=>o.MovieTheatersMovies)
+            .FirstOrDefaultAsync(x => x.Id == id);
+        return movie;
+    }
+    
+    public async Task<int> AddMovie(Movie movie)
+    {
+        await _context.Movies.AddAsync(movie);
+        await _context.SaveChangesAsync();
+        return _context.Movies.First(o=>o.Title==movie.Title).Id;
+    }
+
+    public async Task UpdateMovie(Movie movie)
+    {
+        _context.Movies.Update(movie);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteMovie(Movie movie)
+    {
+        _context.Movies.Remove(movie);
+        await _context.SaveChangesAsync();
+    }
 }

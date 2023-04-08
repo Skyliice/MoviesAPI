@@ -12,7 +12,6 @@ namespace MoviesAPI.Controllers;
 public class ActorsController : Controller
 {
     private MoviesDataService _service;
-    private IFileStorageService _fileStorageService;
 
     public ActorsController(MoviesDataService service)
     {
@@ -39,7 +38,20 @@ public class ActorsController : Controller
         }
         return actor;
     }
-    
+
+    [HttpGet("searchByName/{query}")]
+    public async Task<ActionResult<List<ActorsMovieDTO>>> SearchByName(string query)
+    {
+        if (string.IsNullOrWhiteSpace(query))
+            return new List<ActorsMovieDTO>();
+        return await _service.GetActorsAsQueryable()
+            .Where(o => o.Name.Contains(query))
+            .OrderBy(o=>o.Name)
+            .Select(o=> new ActorsMovieDTO(){Id = o.Id, Name = o.Name, Picture = o.Picture})
+            .Take(5)
+            .ToListAsync();
+    }
+
     [HttpPost]
     public async Task<ActionResult> Post([FromForm] ActorCreationDTO actor)
     {
