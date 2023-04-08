@@ -10,4 +10,5 @@ public class MovieTheater
     [StringLength(75)]
     public string Name { get; set; }
     public Point Location { get; set; }
+    public List<Movie> Movies { get; set; } = new List<Movie>();
 }

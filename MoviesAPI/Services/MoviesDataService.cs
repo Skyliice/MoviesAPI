@@ -125,4 +125,59 @@ public class MoviesDataService
         await _context.DeleteMovieTheater(movieTheater);
     }
     
+    
+    public async Task<int> AddMovie(MovieCreationDTO movieCreationDto)
+    {
+        var movie = _mapper.Map<Movie>(movieCreationDto);
+        if (movieCreationDto.Poster != null)
+        {
+            movie.Poster = await _fileStorageService.SaveFile("movies", movieCreationDto.Poster);
+        }
+
+        var movieGenres = await ConvertMovieGenres(movieCreationDto);
+        var theaters = await ConvertMovieTheaters(movieCreationDto);
+        movie.MovieTheatersMovies = theaters;
+        movie.MoviesGenres = movieGenres;
+        AnnotateActorsOrder(movie);
+        var id = await _context.AddMovie(movie);
+        return id;
+    }
+    
+    private async Task<List<MovieTheater>> ConvertMovieTheaters(MovieCreationDTO movieCreationDto)
+    {
+        var theaters = _context.GetMovieTheatersAsQueryable().Where(o => movieCreationDto.MovieTheatersIds.Any(x => x == o.Id)).ToList();
+        return theaters;
+    }
+
+    private async Task<List<Genre>> ConvertMovieGenres(MovieCreationDTO movieCreationDto)
+    {
+        var genres = _context.GetGenresAsQueryable().Where(o => movieCreationDto.GenresIds.Any(x => x == o.Id)).ToList();
+        return genres;
+    }
+
+    public async Task<MovieDTO> GetMovieById(int id)
+    {
+        var movie = await _context.GetMovieById(id);
+        if (movie == null)
+        {
+            return null;
+        }
+
+        var dto = _mapper.Map<MovieDTO>(movie);
+        dto.Actors = dto.Actors.OrderBy(o => o.Order).ToList();
+        return dto;
+    }
+
+    private void AnnotateActorsOrder(Movie movie)
+    {
+        if (movie.MovieActors != null)
+        {
+            for (int i = 0; i < movie.MovieActors.Count; i++)
+            {
+                movie.MovieActors[i].Order = i;
+            }
+        }
+    }
+
+    
 }

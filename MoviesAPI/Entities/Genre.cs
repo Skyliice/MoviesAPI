@@ -10,4 +10,6 @@ public class Genre
     [StringLength(30)]
     [FirstLetterUppercase]
     public string Name { get; set; }
+
+    public List<Movie> Movies { get; set; } = new List<Movie>();
 }

@@ -21,4 +21,10 @@ public interface IRepository
     public Task UpdateMovieTheater(MovieTheater movieTheater);
     public Task DeleteMovieTheater(MovieTheater movieTheater);
     public IQueryable<MovieTheater> GetMovieTheatersAsQueryable();
+    
+    public Task<Movie> GetMovieById(int id);
+    public Task<int> AddMovie(Movie movie);
+    public Task UpdateMovie(Movie movie);
+    public Task DeleteMovie(Movie movie);
+    public IQueryable<Movie> GetMoviesAsQueryable();
 }

@@ -15,5 +15,5 @@ public class Movie
     public string Poster { get; set; }
     public List<Genre> MoviesGenres { get; set; }
     public List<MovieTheater> MovieTheatersMovies { get; set; }
-    public List<Actor> MovieActors { get; set; }
+    public List<MoviesActors> MovieActors { get; set; }
 }
